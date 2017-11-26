@@ -8,7 +8,7 @@ PRAGMA writable_schema = 0;
 CREATE TABLE uzivatele (
   iduzivatel integer PRIMARY KEY AUTOINCREMENT,
   jmeno varchar,
-  login varchar,
+  login varchar UNIQUE,
   heslo varchar,
   email varchar,
   idprava integer
