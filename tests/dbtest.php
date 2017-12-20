@@ -31,9 +31,12 @@ var_print($r);
 $r=$db->get_users();
 var_print($r);
 
-
-
 // test rights
 
 $r=$db->get_user_rights($r[0]);
 var_print($r);
+
+$r=$db->get_user_rights(1);
+var_print($r);
+
+
