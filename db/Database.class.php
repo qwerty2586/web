@@ -60,18 +60,18 @@ class Database
     private function import_script($script)
     {
         $lines = file($script);
-        $op_data = '';
+        $op_data = "";
         foreach ($lines as $line) {
-            if (substr($line, 0, 2) == '--' || $line == '')//This IF Remove Comment Inside SQL FILE
+            if (substr($line, 0, 2) == "--" || $line == "")
             {
                 continue;
             }
             $op_data .= $line;
-            if (substr(trim($line), -1, 1) == ';')//Breack Line Upto ';' NEW QUERY
+            if (substr(trim($line), -1, 1) == ";")
             {
                 $this->prepare($op_data);
                 $this->execute();
-                $op_data = '';
+                $op_data = "";
             }
         }
     }
