@@ -3,3 +3,7 @@
 .idea/workspace.xml
 .idea/dataSources*
 .idea/dataSources/**
+
+# project related
+
+db/db.sqlite
