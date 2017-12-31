@@ -15,7 +15,12 @@ $navbar = $twig->render("navbar.twig", [
     "pages" => $PAGES,
     "index" => "news"
 ]);
-$content = $PAGE;
+
+switch ($PAGE) {
+    case "login" : $content = $twig->render("pages/login.twig"); break;
+    default : $content = $PAGE;
+}
+
 
 $document = $twig->render("document.twig", [
     "header" => $header,
@@ -24,5 +29,3 @@ $document = $twig->render("document.twig", [
 ]);
 
 echo $document;
-
-?>
