@@ -4,6 +4,17 @@ body {
     background-color: rgb(250, 240, 250);
 }
 
+.alert {
+    margin-bottom: 1px;
+    height: 40px;
+    line-height:10px;
+    padding:0px 15px;
+}
+
 #register .input-group-addon { min-width: 150px; }
 #register .input-group { width: 100%; }
 #register .input-group { margin-bottom: 25px; }
+
+#register-message-container {
+    width : auto;
+}
