@@ -23,7 +23,7 @@ class Responder
     }
 
     public function error($message) {
-        $this->respond("ERROR",$message);
+        $this->respond("DANGER",$message);
     }
 
     public function success($message) {

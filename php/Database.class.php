@@ -96,19 +96,21 @@ class Database
         return $this->temp_statement->fetch();
     }
 
-    public function get_user($log,$pas) {
+    public function get_user($log,$pass) {
+        $pass = hash("sha256",$pass);
         $this->prepare( "SELECT * FROM ".USERS." WHERE ".LOGIN."=:login AND ".PASSWORD."=:heslo ;" );
         $this->bind(":login",$log);
-        $this->bind(":heslo",$pas);
+        $this->bind(":heslo",$pass);
         $this->execute();
         return $this->fetch();
     }
 
-    public function new_user($name, $log, $pas, $mail) {
-        $this->prepare( "INSERT INTO ".USERS." (".NAME.", ".LOGIN.", ".PASSWORD.", ".EMAIL.") VALUES (:name, :login,:pas,:mail);");
+    public function new_user($name, $log, $pass, $mail) {
+        $pass = hash("sha256",$pass);
+        $this->prepare( "INSERT INTO ".USERS." (".NAME.", ".LOGIN.", ".PASSWORD.", ".EMAIL.") VALUES (:name, :login,:pass,:mail);");
         $this->bind(":name",$name);
         $this->bind(":login",$log);
-        $this->bind(":pas",$pas);
+        $this->bind(":pass",$pass);
         $this->bind(":mail",$mail);
         $this->execute();
     }

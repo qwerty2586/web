@@ -4,7 +4,7 @@ $PAGE = 'login';
 $TITLE = 'Login';
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/php/init.php';
-global $ROOT, $db, $twig;
+global $ROOT, $db, $twig, $r;
 
 //// GET
 if ($_SERVER['REQUEST_METHOD']=='GET') {
@@ -20,12 +20,11 @@ switch ($_POST["action"]) {
     case "login" :
         $login = $_POST["login"];
         $pass = $_POST["pass"];
-        $pass = hash("sha256",$pass);
         $user = $db->get_user($login,$pass);
         if ($user) {
-            echo "OK";
+            $r->ok();
         } else {
-            echo "DANGER|Combination of username and password dont match\n";
+            $r->error("Combination of username and password dont match");
         }
         break;
     case "register" :
@@ -37,54 +36,53 @@ switch ($_POST["action"]) {
 
         // username
         if (strlen($username)<= 2) {
-            echo "DANGER|Username must be longer than 2 characters\n";
+            $r->error("Username must be longer than 2 characters");
             $all_ok =false;
         }
         if (strlen($username)>= 25) {
-            echo "DANGER|Username must be shorter than 25 characters\n";
+            $r->error("Username must be shorter than 25 characters");
             $all_ok =false;
         }
 
         // login
         if (strlen($login)<= 2) {
-            echo "DANGER|Login must be longer than 2 characters\n";
+            $r->error("Login must be longer than 2 characters");
             $all_ok =false;
         } elseif (strlen($login)>= 25) {
-            echo "DANGER|Login must be shorter than 25 characters\n";
+            $r->error("Login must be shorter than 25 characters");
             $all_ok =false;
         } elseif ($db->get_user_by_login($login)) {
-            echo "DANGER|This login is already in use!\n";
+            $r->error("This login is already in use!");
             $all_ok =false;
         }
 
         // password
         if (strlen($pass)<= 6) {
-            echo "DANGER|Password must be longer than 6 characters\n";
+            $r->error("Password must be longer than 6 characters");
             $all_ok =false;
         } elseif (strlen($pass)>= 25) {
-            echo "DANGER|Password must be shorter than 25 characters\n";
+            $r->error("Password must be shorter than 25 characters");
             $all_ok =false;
         }
         if (!preg_match("#[0-9]+#", $pass)) {
-            echo "DANGER|Password must include at least one number!\n";
+            $r->error("Password must include at least one number!");
             $all_ok =false;
         }
         if (!preg_match("#[a-zA-Z]+#", $pass)) {
-            echo "DANGER|Password must include at least one letter!\n";
+            $r->error("Password must include at least one letter!");
             $all_ok =false;
         }
 
         //mail
         if (!filter_var($mail, FILTER_VALIDATE_EMAIL)) {
-            echo "DANGER|EMail is invalid\n";
+            $r->error("EMail is invalid");
             $all_ok =false;
         }
 
 
         if ($all_ok) {
-            $pass = hash("sha256",$pass);
             $db->new_user($username,$login,$pass,$mail);
-            echo "OK";
+            $r->ok();
         }
         break;
     default: echo "NOT YET IMPLEMENTED";
