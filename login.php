@@ -85,6 +85,6 @@ switch ($_POST["action"]) {
             $r->ok();
         }
         break;
-    default: echo "NOT YET IMPLEMENTED";
+    default: $r->not_implemented();
 
 }

@@ -18,6 +18,13 @@ class Responder
         $this->locked=true;
     }
 
+    public function not_implemented() {
+        echo "NOT_YET_IMPLEMENTED";
+        $this->locked=true;
+    }
+
+
+
     public function danger($message) {
         $this->error($message);
     }
