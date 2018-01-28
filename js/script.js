@@ -20,6 +20,11 @@ function log_in() {
 }
 
 function showMessage(result, where = $("#message-container")) {
+    // if we get xdebug message
+    if (result.includes("<br />")) {
+        $("#message-container").html(result);
+        return;
+    }
     let messages = result.split("\n");
     messages.forEach(function (line) {
         let parts = line.split("|");
@@ -64,6 +69,7 @@ function register() {
                     setTimeout(function () {
                         $("#register").modal("show");
                     }, 500);
+                    $("#register-message-container").html("");
                     showMessage(result,$("#register-message-container"));
                 }
             });

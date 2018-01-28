@@ -17,13 +17,16 @@ class Renderer
     private $twig;
     private $db;
 
+    private $ctx;
+
     private $PAGES = [
         "news" => "News",
         "users" => "Users",
         "login" => "Login"
     ];
 
-    public function __construct($db)
+    /** @var \Context $ctx */
+    public function __construct($ctx)
     {
 
         $this->loader = new \Twig_Loader_Filesystem(ROOT . '/templates');
@@ -31,7 +34,8 @@ class Renderer
             //uncomment line for enabling cache
             // 'cache' => $ROOT.'/templates/cache'
         ]);
-        $this->db = $db;
+        $this->db = $ctx->get_db();
+        $this->ctx = $ctx;
 
     }
 

@@ -1,27 +1,39 @@
 <?php
 
-$PAGE = 'login';
-$TITLE = 'Login';
+require_once $_SERVER['DOCUMENT_ROOT'].'/php/Context.class.php';
+$ctx = new Context();
 
-require_once $_SERVER['DOCUMENT_ROOT'].'/php/init.php';
-global $ROOT, $db, $twig, $r, $rend;
+//require_once $_SERVER['DOCUMENT_ROOT'].'/php/init.php';
+//global $ROOT, $db, $twig, $r, $rend;
 
 //// GET
 if ($_SERVER['REQUEST_METHOD']=='GET') {
-    echo $rend->render_page("login");
+    echo $ctx->get_renderer()->render_page("login");
+    //echo $rend->render_page("login");
     return;
 }
 
 
 //// POST
+$db = $ctx->get_db();
+$r = $ctx->get_responder();
 
 
 switch ($_POST["action"]) {
+    case "logout" :
+        if ($ctx->get_login()->is_user_loged()) {
+            $ctx->get_login()->logout();
+            $r->ok();
+        } else {
+            $r->error("Already logged out!!!");
+        }
+        break;
     case "login" :
         $login = $_POST["login"];
         $pass = $_POST["pass"];
         $user = $db->get_user($login,$pass);
         if ($user) {
+            $ctx->get_login()->login($user["iduser"]);
             $r->ok();
         } else {
             $r->error("Combination of username and password dont match");

@@ -14,7 +14,7 @@ class Responder
     private $locked=false;
 
     public function ok() {
-        echo "ok";
+        echo "OK";
         $this->locked=true;
     }
 

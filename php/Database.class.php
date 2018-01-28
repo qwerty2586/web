@@ -41,6 +41,8 @@ class Database
 
     public function __construct()
     {
+
+        // if db is not created, function create new db and import tables and data
         if (!file_exists(FILE)) {
             $this->create_db();
         }
@@ -55,6 +57,7 @@ class Database
         $this->db->query("PRAGMA encoding=\"UTF-8\";");
         $this->import_script(FILE_DDL);
         $this->import_script(FILE_DML);
+        $this->db->commit();
     }
 
     private function import_script($script)
