@@ -2,6 +2,7 @@ let router = {
     index: "news.php",
     news: "news.php",
     login: "login.php",
+    articles: "articles.php",
 
 };
 
@@ -20,9 +21,10 @@ function log_in() {
 }
 
 function showMessage(result, where = $("#message-container")) {
+
     // if we get xdebug message
     if (result.includes("<br />")) {
-        $("#message-container").html(result);
+        where.html(result);
         return;
     }
     let messages = result.split("\n");
@@ -61,7 +63,7 @@ function register() {
         let action = "register";
         $.post(router.login, {username: username, login: login, pass: pass, mail:mail, action: action},
             function (result) {
-                if (result == "OK") {
+                if (result === "OK") {
                     showMessage("SUCCESS|Registration was sucessfull");
                     $("#login-username").val(login);
                     $("#login-password").val(pass);
@@ -74,4 +76,29 @@ function register() {
                 }
             });
     });
+}
+
+function logout() {
+    let action = "logout";
+    $.post(router.login, {action: action},
+        function (result) {
+            if (result === "OK") {
+                location.href = router.login;
+            } else {
+                showMessage(result);
+            }
+        });
+}
+
+function deleteArticle(index) {
+    let action = "delete";
+    let idarticle = articles[index].idarticle;
+    $.post(router.articles, {action: action, idarticle: idarticle},
+        function (result) {
+            if (result === "OK") {
+                location.reload();
+            } else {
+                showMessage(result);
+            }
+        });
 }

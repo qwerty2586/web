@@ -33,6 +33,7 @@ CREATE TABLE ratings (
 CREATE TABLE articles (
   idarticle integer PRIMARY KEY AUTOINCREMENT,
   iduser integer,
+  name varchar,
   aprouval varchar,
   filename varchar
 );

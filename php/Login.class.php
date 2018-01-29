@@ -8,12 +8,13 @@
 
 class Login{
 
-    private $ses; // objekt MySession
-    private $_ID = "id"; // nazev sessny pro jmeno
-    private $_DATE = "date"; // nazev sessny pro datum
+    private $ses;
+    private $_ID = "id";
+    private $_NAME = "name";
+    private $_DATE = "date";
 
     /**
-     *  Pri vytvoreni objektu zahaji session.
+     *  During construct take ssesion from context
      *  @var \Context $ctx
      */
     public function __construct($ctx){
@@ -40,23 +41,20 @@ class Login{
     }
 
     /**
-     *  Odhlasi uzivatele.
+     *  Logout
      */
     public function logout(){
         $this->ses->removeSession($this->_ID);
         $this->ses->removeSession($this->_DATE);
     }
 
-    /**
-     *  Vrati informace o uzivateli
-     *  @return string Informace o uzivateli.
-     */
     public function getUserInfo(){
-        $name = $this->ses->readSession($this->_ID);
+        $id = $this->ses->readSession($this->_ID);
         $date = $this->ses->readSession($this->_DATE);
-        return "ID: $name<br>Date: $date<br>";
+        return "ID: $id<br>Date: $date<br>";
     }
 
-
-
+    public function get_user_id() {
+        return intval($this->ses->readSession($this->_ID));
+    }
 }

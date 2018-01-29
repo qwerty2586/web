@@ -1,0 +1,73 @@
+{# twig template articles #}
+<script type="text/javascript">
+    var articles = [];
+    $(function () {
+        articles = JSON.parse('{{ articles_json | raw }}');
+    })
+</script>
+<div class="container">
+
+
+{% if (my_rights >= rigths.admin ) %}
+<a class="btn btn-primary" onclick="newArticle();"><span class="glyphicon glyphicon-plus-sign"
+                                                         aria-hidden="true"></span> New</a>
+{% endif %}
+    <br />
+    <br />
+<table class="table table-striped" id="article_table">
+    <thead>
+    <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>User</th>
+        <th>Aprouved</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% set index = 0 %}
+    {% for article in articles %}
+        {% set index = index + 1 %}
+        <tr>
+            <td>
+                {{ index }}
+            </td>
+            <td>
+                {{ article.name }}
+            </td>
+            <td>
+                {{ article.username }}
+            </td>
+            <td>
+                {% if (article.aprouval == '0') %} Selecting reviewers {% endif %}
+            </td>
+
+            {# all  buttons#}
+            <td>
+                {% if (my_rights == rigths.admin ) %}
+                <a class="btn btn-danger" onclick="deleteArticle({{ index -1 }});"><span class="glyphicon glyphicon-trash"
+                                                                         aria-hidden="true"></span> Delete</a>
+                {% endif %}
+            </td>
+
+
+        </tr>>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+
+<script>
+    jQuery(function($) {
+        $('#article_table').DataTable({
+            order: [1, 'asc'],
+            columns: [
+                null,
+                null,
+                null,
+                null,
+                {orderable: false}
+            ]
+        });
+    });
+</script>

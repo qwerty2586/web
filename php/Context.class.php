@@ -13,6 +13,8 @@ require_once $ROOT.'/php/Responder.class.php';
 require_once $ROOT.'/php/Renderer.class.php';
 require_once $ROOT.'/php/Login.class.php';
 require_once $ROOT.'/php/Session.class.php';
+require_once $ROOT.'/php/Article.class.php';
+require_once $ROOT.'/php/Rights.class.php';
 
 class Context
 {
@@ -21,6 +23,8 @@ class Context
     private $db = null;
     private $renderer = null;
     private $responder = null;
+    private $article = null;
+    private $rights = null;
 
     public function get_login() {
         if ($this->login == null) {
@@ -60,7 +64,19 @@ class Context
         return $this->responder;
     }
 
+    public function get_article()
+    {
+        if ($this->article == null) {
+            $this->article = new Article($this);
+        }
+        return $this->article;
+    }
 
-
-
+    public function get_rights()
+    {
+        if ($this->rights == null) {
+            $this->rights = new Rights($this);
+        }
+        return $this->rights;
+    }
 }

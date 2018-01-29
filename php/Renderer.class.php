@@ -9,10 +9,9 @@
 namespace Renderer;
 
 define("ROOT", $_SERVER['DOCUMENT_ROOT']);
-require_once ROOT.'/vendor/autoload.php';
+require_once ROOT . '/vendor/autoload.php';
 
-class Renderer
-{
+class Renderer {
     private $loader;
     private $twig;
     private $db;
@@ -22,16 +21,19 @@ class Renderer
     private $PAGES = [
         "news" => "News",
         "users" => "Users",
+        "articles" => "Articles",
         "login" => "Login"
     ];
 
+
+
+
     /** @var \Context $ctx */
-    public function __construct($ctx)
-    {
+    public function __construct($ctx) {
 
         $this->loader = new \Twig_Loader_Filesystem(ROOT . '/templates');
         $this->twig = new \Twig_Environment($this->loader, [
-            //uncomment line for enabling cache
+            //  uncomment line for enabling cache
             // 'cache' => $ROOT.'/templates/cache'
         ]);
         $this->db = $ctx->get_db();
@@ -39,8 +41,7 @@ class Renderer
 
     }
 
-    public function render_page($page)
-    {
+    public function render_page($page) {
         $header = $this->render_header($page);
         $navbar = $this->render_navbar($page);
         $content = $this->render_content($page);
@@ -60,23 +61,57 @@ class Renderer
         return $this->PAGES[$page];
     }
 
-    private function render_content($page)
-    {
+    private function render_content($page) {
         switch ($page) {
-            case "login" : return $this->twig->render("pages/login.twig"); break;
-            default : return $page;
+            case "login" :
+                return $this->twig->render("pages/login.twig");
+                break;
+            case "articles" :
+                $params = [
+                    "articles_json" => $this->ctx->get_article()->get_all_articles_json(),
+                    "articles" => $this->ctx->get_article()->get_all_articles(),
+                    "users" => $this->get_users(),
+                    "my_rigths" => $this->ctx->get_rights()->get_user_rigths(),
+                    "rights" => $this->ctx->get_rights()::RIGHTS
+                ];
+                return $this->twig->render("pages/articles.twig", $params);
+                break;
+            default :
+                return $page;
         }
     }
 
-    private function render_navbar($page)
-    {
+    private function render_navbar($page) {
         $params = [
             "title" => $this->get_title($page),
             "current_page" => $page,
             "pages" => $this->PAGES,
             "index" => "news",
-            "login" => "login"
+            "login" => "login",
+            "user" => ""
         ];
-        return $this->twig->render("navbar.twig",$params);
+
+        if ($this->ctx->get_login()->is_user_loged()) {
+            $params["login"] = "logout";
+            $params["user"] = $this->get_user_login();
+        }
+
+        return $this->twig->render("navbar.twig", $params);
+    }
+
+    private function get_user_rights() {
+        return $this->db->get_user_rights($this->ctx->get_login()->get_user_id())["idright"];
+    }
+
+    private function get_user_login() {
+        return $this->db->get_user_by_id($this->ctx->get_login()->get_user_id())["login"];
+    }
+
+    private function get_user_id() {
+        return $this->ctx->get_login()->get_user_id();
+    }
+
+    private function get_users() {
+        return $this->db->get_users();
     }
 }

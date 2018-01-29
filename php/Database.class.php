@@ -10,68 +10,65 @@
 namespace DB;
 
 
-define("FILE",$_SERVER['DOCUMENT_ROOT']."/db/db.sqlite");
-define("FILE_DDL",$_SERVER['DOCUMENT_ROOT']."/db/ddl.sql");
-define("FILE_DML",$_SERVER['DOCUMENT_ROOT']."/db/dml.sql");
+define("FILE", $_SERVER['DOCUMENT_ROOT'] . "/db/db.sqlite");
+define("FILE_DDL", $_SERVER['DOCUMENT_ROOT'] . "/db/ddl.sql");
+define("FILE_DML", $_SERVER['DOCUMENT_ROOT'] . "/db/dml.sql");
 
 // tabulky
-define("USERS","users");
-define("RIGHTS","rights");
-define("RATINGS","ratings");
-define("ARTICLES","articles");
+define("USERS", "users");
+define("RIGHTS", "rights");
+define("RATINGS", "ratings");
+define("ARTICLES", "articles");
 
 // UZIVATELE
-define("IDUSER","iduser");
-define("NAME","name");
-define("LOGIN","login");
-define("PASSWORD","password");
-define("EMAIL","email");
+define("IDUSER", "iduser");
+define("NAME", "name");
+define("LOGIN", "login");
+define("PASSWORD", "password");
+define("EMAIL", "email");
 
 //PRAVA
-define("IDRIGHT","idright");
-define("LABEL","label");
-define("WEIGHT","weight");
+define("IDRIGHT", "idright");
+define("LABEL", "label");
+define("WEIGHT", "weight");
+
+// CLANKY
+define("IDARTICLE", "idarticle");
+define("APROUVAL", "aprouval");
+define("FILENAME", "filename");
 
 
-
-class Database
-{
+class Database {
     private $db;
     private $temp_statement;
 
-    public function __construct()
-    {
+    public function __construct() {
 
         // if db is not created, function create new db and import tables and data
         if (!file_exists(FILE)) {
             $this->create_db();
         }
 
-        $this->db = new \PDO("sqlite:".FILE );
+        $this->db = new \PDO("sqlite:" . FILE);
         $this->db->query("PRAGMA encoding=\"UTF-8\";");
     }
 
-    private function create_db()
-    {
-        $this->db = new \PDO("sqlite:".FILE );
+    private function create_db() {
+        $this->db = new \PDO("sqlite:" . FILE);
         $this->db->query("PRAGMA encoding=\"UTF-8\";");
         $this->import_script(FILE_DDL);
         $this->import_script(FILE_DML);
-        $this->db->commit();
     }
 
-    private function import_script($script)
-    {
+    private function import_script($script) {
         $lines = file($script);
         $op_data = "";
         foreach ($lines as $line) {
-            if (substr($line, 0, 2) == "--" || $line == "")
-            {
+            if (substr($line, 0, 2) == "--" || $line == "") {
                 continue;
             }
             $op_data .= $line;
-            if (substr(trim($line), -1, 1) == ";")
-            {
+            if (substr(trim($line), -1, 1) == ";") {
                 $this->prepare($op_data);
                 $this->execute();
                 $op_data = "";
@@ -85,49 +82,51 @@ class Database
         $this->temp_statement->setFetchMode(\PDO::FETCH_ASSOC);
     }
 
-    private function bind($param,$value) {
+    private function bind($param, $value) {
         $this->temp_statement->bindValue($param, $value);
     }
 
     private function execute() {
         return $this->temp_statement->execute();
     }
+
     private function fetchAll() {
         return $this->temp_statement->fetchAll();
     }
+
     private function fetch() {
         return $this->temp_statement->fetch();
     }
 
-    public function get_user($log,$pass) {
-        $pass = hash("sha256",$pass);
-        $this->prepare( "SELECT * FROM ".USERS." WHERE ".LOGIN."=:login AND ".PASSWORD."=:heslo ;" );
-        $this->bind(":login",$log);
-        $this->bind(":heslo",$pass);
+    public function get_user($log, $pass) {
+        $pass = hash("sha256", $pass);
+        $this->prepare("SELECT * FROM " . USERS . " WHERE " . LOGIN . "=:login AND " . PASSWORD . "=:heslo ;");
+        $this->bind(":login", $log);
+        $this->bind(":heslo", $pass);
         $this->execute();
         return $this->fetch();
     }
 
     public function new_user($name, $log, $pass, $mail) {
-        $pass = hash("sha256",$pass);
-        $this->prepare( "INSERT INTO ".USERS." (".NAME.", ".LOGIN.", ".PASSWORD.", ".EMAIL.") VALUES (:name, :login,:pass,:mail);");
-        $this->bind(":name",$name);
-        $this->bind(":login",$log);
-        $this->bind(":pass",$pass);
-        $this->bind(":mail",$mail);
+        $pass = hash("sha256", $pass);
+        $this->prepare("INSERT INTO " . USERS . " (" . NAME . ", " . LOGIN . ", " . PASSWORD . ", " . EMAIL . ", " . IDRIGHT . ") VALUES (:name, :login,:pass,:mail,1);");
+        $this->bind(":name", $name);
+        $this->bind(":login", $log);
+        $this->bind(":pass", $pass);
+        $this->bind(":mail", $mail);
         $this->execute();
     }
 
     public function get_user_by_id($id) {
-        $this->prepare( "SELECT * FROM ".USERS." WHERE ".IDUSER."=:iduzivatel ;" );
-        $this->bind(":iduzivatel",$id);
+        $this->prepare("SELECT * FROM " . USERS . " WHERE " . IDUSER . "=:iduzivatel ;");
+        $this->bind(":iduzivatel", $id);
         $this->execute();
         return $this->fetch();
     }
 
     public function get_user_by_login($login) {
-        $this->prepare( "SELECT * FROM ".USERS." WHERE ".LOGIN."=:login ;" );
-        $this->bind(":login",$login);
+        $this->prepare("SELECT * FROM " . USERS . " WHERE " . LOGIN . "=:login ;");
+        $this->bind(":login", $login);
         $this->execute();
         return $this->fetch();
     }
@@ -135,20 +134,30 @@ class Database
     public function get_user_rights($user) {
         if (is_int($user)) $user = $this->get_user_by_id($user);
 
-        $this->prepare( "SELECT * FROM ".RIGHTS." WHERE ".IDRIGHT."=:idprava ;" );
-        $this->bind(":idprava",$user[IDRIGHT]);
+        $this->prepare("SELECT * FROM " . RIGHTS . " WHERE " . IDRIGHT . "=:idprava ;");
+        $this->bind(":idprava", $user[IDRIGHT]);
         $this->execute();
         return $this->fetch();
     }
 
     public function get_users() {
-        $this->prepare( "SELECT * FROM ".USERS.";" );
+        $this->prepare("SELECT * FROM " . USERS . ";");
         $this->execute();
         return $this->fetchAll();
     }
 
+    public function get_articles() {
+        $this->prepare("SELECT * FROM " . ARTICLES . ";");
+        $this->execute();
+        return $this->fetchAll();
+    }
 
-
+    public function delete_article($id) {
+        $this->prepare("SELECT * FROM " . ARTICLES . " WHERE ".IDARTICLE." =:idarticle ;");
+        $this->bind(":idarticle",$id);
+        $this->execute();
+        return $this->fetchAll();
+    }
 
 
 
