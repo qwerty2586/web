@@ -27,13 +27,14 @@ CREATE TABLE ratings (
   quality integer,
   length integer,
   interesting integer,
-  review varchar
+  review varchar,
+  finished integer
 );
 
 CREATE TABLE articles (
   idarticle integer PRIMARY KEY AUTOINCREMENT,
   iduser integer,
   name varchar,
-  aprouval varchar,
+  aprouval integer,
   filename varchar
 );

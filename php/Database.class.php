@@ -37,6 +37,15 @@ define("IDARTICLE", "idarticle");
 define("APROUVAL", "aprouval");
 define("FILENAME", "filename");
 
+// RECENZE
+define("IDRATING","idrating");
+define("QUALITY","quality");
+define("LENGTH","length");
+define("INTERESTING","interesting");
+define("REVIEW","review");
+define("FINISHED","finished");
+
+
 
 class Database {
     private $db;
@@ -131,6 +140,13 @@ class Database {
         return $this->fetch();
     }
 
+    public function get_user_by_name($name) {
+        $this->prepare("SELECT * FROM " . USERS . " WHERE " . NAME . "=:name ;");
+        $this->bind(":name", $name);
+        $this->execute();
+        return $this->fetch();
+    }
+
     public function get_user_rights($user) {
         if (is_int($user)) $user = $this->get_user_by_id($user);
 
@@ -153,11 +169,60 @@ class Database {
     }
 
     public function delete_article($id) {
-        $this->prepare("SELECT * FROM " . ARTICLES . " WHERE ".IDARTICLE." =:idarticle ;");
+        $this->prepare("DELETE FROM " . ARTICLES . " WHERE ".IDARTICLE." =:idarticle ;");
         $this->bind(":idarticle",$id);
+        $this->execute();
+    }
+
+    public function new_article($name, $iduser, $approuval, $filename) {
+        $this->prepare("INSERT INTO " . ARTICLES . " (" . NAME . ", " . IDUSER . ", " . APROUVAL . ", " . FILENAME .
+            ") VALUES (:name, :iduser,:approuval,:filename);");
+        $this->bind(":name",$name);
+        $this->bind(":iduser",$iduser);
+        $this->bind(":approuval",$approuval);
+        $this->bind(":filename",$filename);
+        $this->execute();
+    }
+
+    public function create_rating($idarticle,$iduser) {
+        $this->prepare("INSERT INTO " . RATINGS . " (" . IDUSER . ", " . IDARTICLE . ", " . QUALITY . ", " . LENGTH . ", " . INTERESTING . ", " . REVIEW .", " . FINISHED .
+            ") VALUES (:iduser,:idarticle,-1,-1,-1,:review,0);");
+        $this->bind(":iduser",$iduser);
+        $this->bind(":idarticle",$idarticle);
+        $this->bind(":review","");
+        $this->execute();
+    }
+    public function article_change_aprouval($idarticle,$aprouval) {
+        $this->prepare("UPDATE " . ARTICLES . " SET " . APROUVAL . " =:aprouval WHERE " . IDARTICLE . " =:idarticle ;");
+        $this->bind(":aprouval",$aprouval);
+        $this->bind(":idarticle",$idarticle);
+        $this->execute();
+    }
+
+    public function get_reviews() {
+        $this->prepare("SELECT * FROM " . RATINGS . ";");
         $this->execute();
         return $this->fetchAll();
     }
+
+    public function edit_review($idrating,$quality,$length,$interesting,$review,$finished) {
+        $this->prepare("UPDATE " . RATINGS . " SET "
+            .QUALITY. " =:quality ,"
+            .LENGTH. " =:length ,"
+            .INTERESTING. " =:interesting ,"
+            .REVIEW. " =:review ,"
+            .FINISHED. " =:finished "
+            ."WHERE " . IDRATING . " =:idrating ;");
+        $this->bind(":idrating",$idrating);
+        $this->bind(":quality",$quality);
+        $this->bind(":length",$length);
+        $this->bind(":interesting",$interesting);
+        $this->bind(":review",$review);
+        $this->bind(":finished",$finished);
+        $this->execute();
+        return $this->fetchAll();
+    }
+
 
 
 

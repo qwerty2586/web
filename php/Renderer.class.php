@@ -68,10 +68,11 @@ class Renderer {
                 break;
             case "articles" :
                 $params = [
-                    "articles_json" => $this->ctx->get_article()->get_all_articles_json(),
                     "articles" => $this->ctx->get_article()->get_all_articles(),
                     "users" => $this->get_users(),
-                    "my_rigths" => $this->ctx->get_rights()->get_user_rigths(),
+                    "reviewers" => $this->get_reviewers_names(),
+                    "reviews" => $this->ctx->get_article()->get_all_reviews(),
+                    "my_rights" => $this->ctx->get_rights()->get_user_rigths()["idright"],
                     "rights" => $this->ctx->get_rights()::RIGHTS
                 ];
                 return $this->twig->render("pages/articles.twig", $params);
@@ -113,5 +114,16 @@ class Renderer {
 
     private function get_users() {
         return $this->db->get_users();
+    }
+
+    private function get_reviewers_names() {
+        $users =  $this->get_users();
+        $reviewers = [];
+        foreach ($users as $user) {
+            if ($user["idright"] >= $this->ctx->get_rights()::RIGHTS["reviewer"]) {
+                array_push($reviewers,$user["name"]);
+            }
+        }
+        return $reviewers;
     }
 }
