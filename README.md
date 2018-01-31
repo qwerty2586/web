@@ -50,7 +50,7 @@ login.php
 ```
 
   tyto skripty vždy vytvoří nový kontext a následují dvě možné situace na základě použitého http dotazu
-- GET - z kontextu se zavolá třída Renderer, která z šablon vytvoří příslušnou stránku
+- GET - z kontextu se zavolá třída Renderer, která z šablon vytvoří příslušnou stránku.
 - POST - skript provede požadovanou operaci na základě zadaných parametrů a odpoví OK nebo chybovou hláškou.
 
 
