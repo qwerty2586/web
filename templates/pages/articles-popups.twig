@@ -1,0 +1,166 @@
+{# twig template articles-modals #}
+
+<div class="modal fade" id="article-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">New Article</h4>
+            </div>
+            <div class="modal-body">
+                <label>Article Name</label>
+                <input type='text' class='form-control' id='article-name'/><br/>
+
+                <form method='post' action='' enctype="multipart/form-data">
+                    <label>File</label>
+                    <input type='file' name='file' id='file' class='form-control'><br>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" id="article-save">Save</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade" id="reviewers-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Select Reviewers</h4>
+            </div>
+            <div class="modal-body">
+                <label>Article Name</label>
+                <input type='text' class='form-control' id='reviewers-name' readonly="readonly"/><br/>
+                <label>Reviewer 1</label>
+                <select class="form-control" id="user1"></select><br/>
+                <label>Reviewer 2</label>
+                <select class="form-control" id="user2"></select><br/>
+                <label>Reviewer 3</label>
+                <select class="form-control" id="user3"></select><br/>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" id="reviewers-save">Send to reviews
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade" id="review-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Write review</h4>
+            </div>
+            <div class="modal-body">
+                <label>Quality</label>
+                <input id="review-quality" class="form-control rating" data-show-clear="false" data-show-caption="true"
+                       data-min="0" data-max="5" data-step="1"><br/>
+                <label>Length</label>
+                <input id="review-length" class="form-control rating" data-show-clear="false" data-show-caption="true"
+                       data-min="0" data-max="5" data-step="1"><br/>
+                <label>Interesting</label>
+                <input id="review-interesting" class="form-control rating" data-show-clear="false"
+                       data-show-caption="true" data-min="0" data-max="5" data-step="1"><br/>
+                <label>Review</label>
+                <textarea class="form-control" rows="3" id="review-review"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" id="review-save">Send review</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade" id="article-accept-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Accept Article</h4>
+            </div>
+            <div class="modal-body">
+
+                <!-- review 1 -->
+                <div class="panel panel-default" id="article-accept-review1">
+                    <div class="panel-heading" id="article-accept-heading">Review 1</div>
+                    <div class="panel-body">
+                        <label>Quality</label>
+                        <input id="article-accept-quality" class="form-control rating" readonly="readonly"
+                               data-show-clear="false" data-show-caption="true" data-min="0" data-max="5" data-step="1"><br/>
+                        <label>Length</label>
+                        <input id="article-accept-length" class="form-control rating" readonly="readonly"
+                               data-show-clear="false" data-show-caption="true" data-min="0" data-max="5" data-step="1"><br/>
+                        <label>Interesting</label>
+                        <input id="article-accept-interesting" class="form-control rating" readonly="readonly"
+                               data-show-clear="false" data-show-caption="true" data-min="0" data-max="5" data-step="1"><br/>
+                        <label>Review</label>
+                        <div class="panel panel-default">
+                            <div class="panel-body" id="article-accept-review"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- review 2 -->
+                <div class="panel panel-default" id="article-accept-review2">
+                    <div class="panel-heading" id="article-accept-heading">Review 2</div>
+                    <div class="panel-body">
+                        <label>Quality</label>
+                        <input id="article-accept-quality" class="form-control rating" readonly="readonly"
+                               data-show-clear="false" data-show-caption="true" data-min="0" data-max="5" data-step="1"><br/>
+                        <label>Length</label>
+                        <input id="article-accept-length" class="form-control rating" readonly="readonly"
+                               data-show-clear="false" data-show-caption="true" data-min="0" data-max="5" data-step="1"><br/>
+                        <label>Interesting</label>
+                        <input id="article-accept-interesting" class="form-control rating" readonly="readonly"
+                               data-show-clear="false" data-show-caption="true" data-min="0" data-max="5" data-step="1"><br/>
+                        <label>Review</label>
+                        <div class="panel panel-default">
+                            <div class="panel-body" id="article-accept-review"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- review 3 -->
+                <div class="panel panel-default" id="article-accept-review3">
+                    <div class="panel-heading" id="article-accept-heading">Review 3</div>
+                    <div class="panel-body">
+                        <label>Quality</label>
+                        <input id="article-accept-quality" class="form-control rating" readonly="readonly"
+                               data-show-clear="false" data-show-caption="true" data-min="0" data-max="5" data-step="1"><br/>
+                        <label>Length</label>
+                        <input id="article-accept-length" class="form-control rating" readonly="readonly"
+                               data-show-clear="false" data-show-caption="true" data-min="0" data-max="5" data-step="1"><br/>
+                        <label>Interesting</label>
+                        <input id="article-accept-interesting" class="form-control rating" readonly="readonly"
+                               data-show-clear="false" data-show-caption="true" data-min="0" data-max="5" data-step="1"><br/>
+                        <div class="panel panel-default">
+                            <div class="panel-body" id="article-accept-review"></div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="article-accept-save">Accept
+                        article
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+

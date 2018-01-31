@@ -1,0 +1,89 @@
+{# twig template users #}
+<div class="container">
+
+
+    <table class="table table-striped" id="users_table">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>User</th>
+            {% if my_rights >= rights.admin %}
+                <th>Login</th>
+                <th>Email</th>
+            {% endif %}
+            <th>Role</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% set index = 0 %}
+        {% for user in users %}
+            {% set index = index + 1 %}
+            <tr>
+                <td>
+                    {{ index }}
+                </td>
+                <td>
+                    {{ user.name }}
+                </td>
+                {% if my_rights >= rights.admin %}
+                    <td>
+                        {{ user.login }}
+                    </td>
+                    <td>
+                        {{ user.email }}
+                    </td>
+                {% endif %}
+                <td>
+                    {% if user.idright == rights.admin %} Admin {% endif %}
+                    {% if user.idright == rights.reviewer %} Reviewer {% endif %}
+                    {% if user.idright == rights.author %} Author {% endif %}
+                </td>
+
+                {# all  buttons#}
+                <td>
+                    <a class="btn btn-primary" href="/articles.php?search={{ user.name }}" data-toggle="tooltip" title="Articles">
+                        <span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>
+                    {% if my_rights >= rights.admin %}
+                        {% if user.idright < rights.admin %}
+                            {# rights up#}
+                            <a class="btn btn-danger"
+                               onclick="changeUserRights({{ user.iduser }},{{ user.idright + 1 }});"
+                               data-toggle="tooltip" title="Promote"><span
+                                        class="glyphicon glyphicon-chevron-up"
+                                        aria-hidden="true"></span></a>
+                        {% endif %}
+                        {% if user.idright > rights.author %}
+                            <a class="btn btn-danger"
+                               onclick="changeUserRights({{ user.iduser }},{{ user.idright - 1 }});"
+                               data-toggle="tooltip" title="Demote"><span
+                                        class="glyphicon glyphicon-chevron-down"
+                                        aria-hidden="true"></span></a>
+                        {% endif %}
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+<script>
+    jQuery(function ($) {
+        $('#users_table').DataTable({
+            order: [1, 'desc'],
+            columns: [
+                null,
+                {% if my_rights >= rights.admin %}
+                null,
+                null,
+                {% endif %}
+                null,
+                null,
+                {orderable: false}
+            ]
+        });
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>

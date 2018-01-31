@@ -54,4 +54,9 @@ switch ($_POST["action"]) {
         $ctx->get_db()->edit_review($idrating,$quality,$length,$interesting,$review,1);
         $ctx->get_responder()->ok();
         break;
+    case "accept" :
+        $idarticle = $_POST["idarticle"];
+        $ctx->get_db()->article_change_aprouval($idarticle,2);
+        $ctx->get_responder()->ok();
+        break;
 }

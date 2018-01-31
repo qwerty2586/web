@@ -147,9 +147,15 @@ function selectReviewersArticle(index) {
     $("#user2").unbind("click");
     $("#user3").unbind("click");
 
-    $("#user1").on('click' ,function(){refresh_reviewers()} );
-    $("#user2").on('click' ,function(){refresh_reviewers()} );
-    $("#user3").on('click' ,function(){refresh_reviewers()} );
+    $("#user1").on('click', function () {
+        refresh_reviewers()
+    });
+    $("#user2").on('click', function () {
+        refresh_reviewers()
+    });
+    $("#user3").on('click', function () {
+        refresh_reviewers()
+    });
 
     $("#reviewers-modal").modal("show");
     $("#reviewers-save").unbind("click");
@@ -179,38 +185,38 @@ function refresh_reviewers() {
 
     let _backup = $("#user1").val();
     $("#user1").empty();
-    _reviewers.forEach( item => {
+    _reviewers.forEach(item => {
         $("#user1").append("<option>" + item.trim() + "</option>");
     });
     $("#user1").val(_backup);
 
     if (_backup && _backup.length > 0) {
         let index = _reviewers.indexOf(_backup);
-        if (_backup !== -1 ) _reviewers.splice(index,1)
+        if (_backup !== -1) _reviewers.splice(index, 1)
     }
 
     _backup = $("#user2").val();
     $("#user2").empty();
-    _reviewers.forEach( item => {
+    _reviewers.forEach(item => {
         $("#user2").append("<option>" + item.trim() + "</option>");
     });
     $("#user2").val(_backup);
 
     if (_backup && _backup.length > 0) {
         let index = _reviewers.indexOf(_backup);
-        if (_backup !== -1 ) _reviewers.splice(index,1)
+        if (_backup !== -1) _reviewers.splice(index, 1)
     }
 
     _backup = $("#user3").val();
     $("#user3").empty();
-    _reviewers.forEach( item => {
+    _reviewers.forEach(item => {
         $("#user3").append("<option>" + item.trim() + "</option>");
     });
     $("#user3").val(_backup);
 
     if (_backup && _backup.length > 0) {
         let index = _reviewers.indexOf(_backup);
-        if (_backup !== -1 ) _reviewers.splice(index,1)
+        if (_backup !== -1) _reviewers.splice(index, 1)
     }
 
     if ($("#user1").val() && $("#user2").val() && $("#user3").val()) {
@@ -234,12 +240,19 @@ function writeReview(idrating) {
     $("#review-modal").modal("show");
     $("#review-save").unbind("click");
     $("#review-save").click(function () {
-        let quality =  $("#review-quality").val();
-        let length =  $("#review-length").val();
-        let interesting =  $("#review-interesting").val();
-        let review =  $("#review-review").val();
+        let quality = $("#review-quality").val();
+        let length = $("#review-length").val();
+        let interesting = $("#review-interesting").val();
+        let review = $("#review-review").val();
 
-        $.post(router.articles, {action: action, idrating:idrating, quality:quality,length:length,interesting:interesting,review:review},
+        $.post(router.articles, {
+                action: action,
+                idrating: idrating,
+                quality: quality,
+                length: length,
+                interesting: interesting,
+                review: review
+            },
             function (result) {
                 if (result === "OK") {
                     location.reload();
@@ -250,4 +263,62 @@ function writeReview(idrating) {
 
 
     });
+}
+
+function acceptArticle(index) {
+    console.log(index);
+    let action = "accept";
+    var article = articles[index];
+    var reviews_ids = article.article_reviews;
+    var i = 0;
+    // now we add
+
+    reviews_ids.forEach(function (reviews_id) {
+        i++;
+        $("#article-accept-review" + i).show();
+        reviews.forEach(function (review) {
+                if (review.idrating === reviews_id) {
+                    $("#article-accept-review" + i + " #article-accept-heading").text("User: " + review.username);
+                    $("#article-accept-review" + i + " #article-accept-quality").rating('update', review.quality);
+                    $("#article-accept-review" + i + " #article-accept-length").rating('update', review.length);
+                    $("#article-accept-review" + i + " #article-accept-interesting").rating('update', review.interesting);
+                    $("#article-accept-review" + i + " #article-accept-review").text(review.review);
+                }
+            }
+        )
+    });
+    // and hide rest
+    for (i++; i <= 3; i++) {
+        $("#article-accept-review" + i).hide();
+    }
+
+    $("#article-accept-modal").modal("show");
+    $("#article-accept-save").unbind("click");
+    $("#article-accept-save").click(function () {
+        let idarticle = article.idarticle;
+        $.post(router.articles, {action: action, idarticle: idarticle},
+            function (result) {
+                if (result === "OK") {
+                    location.reload();
+                } else {
+                    showMessage(result);
+                }
+            });
+    });
+}
+
+function parse_parameter(p) {
+    return new URLSearchParams(window.location.search).get(p);
+}
+
+function changeUserRights(iduser, new_idright) {
+    let action = "change_rights";
+    $.post(router.users, {action: action, iduser: iduser, new_idright: new_idright},
+        function (result) {
+            if (result === "OK") {
+                location.reload();
+            } else {
+                showMessage(result);
+            }
+        });
 }

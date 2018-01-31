@@ -7,3 +7,5 @@
 # project related
 
 db/db.sqlite
+
+uploads/*

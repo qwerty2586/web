@@ -49,6 +49,7 @@ define("FINISHED","finished");
 
 class Database {
     private $db;
+    /** @var \PDOStatement $temp_statement */
     private $temp_statement;
 
     public function __construct() {
@@ -220,7 +221,15 @@ class Database {
         $this->bind(":review",$review);
         $this->bind(":finished",$finished);
         $this->execute();
-        return $this->fetchAll();
+    }
+
+    public function change_user_rights($iduser,$new_idright) {
+        $this->prepare("UPDATE " . USERS . " SET "
+            .IDRIGHT. " =:idright "
+            ."WHERE " . IDUSER. " =:iduser ;");
+        $this->bind(":iduser",$iduser);
+        $this->bind(":idright",$new_idright);
+        $this->execute();
     }
 
 

@@ -32,7 +32,8 @@ class Article {
                         array_push($article_reviews,$review["idrating"] );
                     }
                     if ($review["iduser"] == $this->myid) {
-                        if ($review["finished"] == 1) {
+                        // show only if my review wasnt writen
+                        if ($review["finished"] == 0) {
                             $my_review = $review["idrating"];
                         }
                     }
@@ -49,6 +50,11 @@ class Article {
     }
 
     public function get_all_reviews() {
-        return $this->db->get_reviews();
+        $data = $this->db->get_reviews();
+        for ($i = 0; $i < sizeof($data); $i++) {
+            // add user names to reviews
+            $data[$i]["username"] = $this->db->get_user_by_id($data[$i]["iduser"])["name"];
+        }
+        return $data;
     }
 }

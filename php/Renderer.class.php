@@ -66,6 +66,14 @@ class Renderer {
             case "login" :
                 return $this->twig->render("pages/login.twig");
                 break;
+            case "users" :
+                $params = [
+                    "users" => $this->get_users(),
+                    "my_rights" => $this->ctx->get_rights()->get_user_rigths()["idright"],
+                    "rights" => $this->ctx->get_rights()::RIGHTS
+                ];
+                return $this->twig->render("pages/users.twig", $params);
+                break;
             case "articles" :
                 $params = [
                     "articles" => $this->ctx->get_article()->get_all_articles(),
