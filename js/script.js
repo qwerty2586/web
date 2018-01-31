@@ -1,6 +1,6 @@
 let router = {
-    index: "news.php",
-    news: "news.php",
+    index: "articles.php",
+    users: "users.php",
     login: "login.php",
     articles: "articles.php",
 

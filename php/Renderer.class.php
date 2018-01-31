@@ -19,7 +19,6 @@ class Renderer {
     private $ctx;
 
     private $PAGES = [
-        "news" => "News",
         "users" => "Users",
         "articles" => "Articles",
         "login" => "Login"
@@ -95,7 +94,7 @@ class Renderer {
             "title" => $this->get_title($page),
             "current_page" => $page,
             "pages" => $this->PAGES,
-            "index" => "news",
+            "index" => "articles",
             "login" => "login",
             "user" => ""
         ];

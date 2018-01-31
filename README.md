@@ -1,40 +1,70 @@
-## 1 Technologie
+# KIV/WEB - Konferenční systém
 
-Povinně HTML5, CSS, PHP, MySQL (nebo jiná databáze) + volitelně šablony, JavaScript, AJAX apod.
+Seminární práce na předmět KIV/WEB. Vypracoval Milan Hajžman.
 
-## 2 Zadání samostatné práce
+## Zadání
 
-Možno volit mezi standardním a alternativními zadáními.
+Vaším úkolem bude vytvořit webové stránky konference.  Téma konference si můžete zvolit libovolné.
 
-### 2.1 Standardní zadání - webové stránky konferenčního systému
+[Celé znění zadání.](SPECS.md)
 
-- Vaším úkolem bude vytvořit webové stránky konference.  Téma konference si můžete zvolit libovolné.
-- Uživateli systému budou autoři příspěvků (vkládají abstrakty a PDF dokumenty), recenzenti příspěvků (hodnotí příspěvky) a administrátoři (spravují uživatele, přiřazují příspěvky recenzentům a rozhodují o publikování příspěvků). Každý uživatel se bude do systému přihlašovat prostřednictvím uživatelského jména a hesla. Nepřihlášený uživatel vidí pouze publikované příspěvky.
-- Nový uživatel se bude moci zaregistrovat, čímž získá status autora.
-- Přihlášený autor vidí svoje příspěvky a stav, ve kterém se nacházejí (v recenzním řízení / přijat +hodnocení / odmítnut +hodnocení). Příspěvky může přidávat, editovat a volitelně i mazat.
-- Přihlášený recenzent vidí příspěvky, které mu byly přiděleny k recenzi, a může je hodnotit (alespoň 3 kritéria). Pokud příspěvek nebyl dosud schválen, tak své hodnocení může změnit.
-- Administrátor spravuje uživatele (určuje jejich role a může uživatele zablokovat či smazat), přiřazuje neschválené příspěvky recenzentům k ohodnocení (každý příspěvek bude recenzován minimálně třemi recenzenty) a na základě recenzí rozhoduje o přijetí nebo odmítnutí příspěvku. Přijaté příspěvky jsou automaticky publikovány ve veřejné části webu.
-- Databáze musí obsahovat alespoň 3 tabulky dostatečně naplněné daty pro předvedení funkčnosti aplikace.
+## Struktura aplikace
 
-## 3 Nutné požadavky na všechny samostatné práce
+```
+|-- /css                 kaskádové styly
+|-- /db
+|   |-- db.sqlite        soubor databáze
+|   |-- ddl.sql,dml.sql  iniciační skripty databáze
+|
+|-- /fonts               ikony bootstrapu
+|-- /images              obrázky knihoven
+|
+|-- /js                  skripty třetích stran
+|   |-- script.js        moje skripty
+|
+|-- /libs                sem se stáhnul composer
+|
+|-- /php                 moje php třídy
+|-- /templates           šablony twigu
+|-- /uploads             soubory nahrané autory
+|-- /vendor              knihovny nahrané composerem(twig)
+|
+|
+|-- articles.php,users.php,login.php 
+                        
+                         vstupní skripty programu
+```
+### Třída Context
+Všechny třídy v aplikaci jsou chápany jako sigletony a poskytují aplikaci určitou funkcionalitu.
+Context drží instance těchto tříd a jestliže nebyl singleton zatím vytvořen, 
+pak zavolá Context konstruktor a uloží pro další použití. Tímto způsobem se minimalizuje vytváření nepoužívaných tříd.
+Singletony si mezi sebou Context předávají a tak není zapotřebí používat globální scope.
 
-- Práce musí být osobně předvedena cvičícímu a po schválení odevzdána na CourseWare či Portál.
-- K práci musí být dodána dokumentace (viz dále) a skripty pro instalaci databáze (např. získané exportem databáze).
-- Web musí dodržovat MVC architekturu.
-- Pro práci s databází musí být využito PDO nebo jeho ekvivalent a používány předpřipravené dotazy (prepared statements).
-- Web musí obsahovat responzivní design.
-- Web musí obsahovat ošetření proti základním typům útoku (XSS, SQL injection).
-- Web musí fungovat i s "ošklivými" URL adresami.
+Pokud například Renderer bude chtít databázi tak se při prvním volání připojení k databázi vytvoří, v každém dalším se předá z proměnné v Contextu.
 
-### 3.1 Dokumentace
+### vstupní body
+```
+articles.php
+users.php
+login.php
+```
 
-K práci vytvořte dokumentaci, která bude obsahovat:
-
-- Vaše jméno,  URL vytvořených stránek (pokud jsou na serveru students.kiv.zcu.cz), Váš email, datum vytvoření, název práce.
-- popis použitých technologií - uveďte hlavně, v které části jste kterou technologii použili.
-- popis adresářové struktury aplikace - co je v kterých adresářích a souborech.
-- popis architektury aplikace - co mají na starosti které třídy (popř. lze využít i UML diagramy).
-- u alternativního zadání uveďte celé, cvičícím schválené zadání práce.
+  tyto skripty vždy vytvoří nový kontext a následují dvě možné situace na základě použitého http dotazu
+- GET - z kontextu se zavolá třída Renderer která z šablon vytvoří příslušnou stránku
+- POST - skript provede požadovanou operaci na základě zadaných parametrů a odpoví OK nebo chybovou hláškou.
 
 
-Dokumentaci netiskněte, ale odevzdejte ji jako PDF.
+## Použité technologie
+
+Stránky generuji z šablon pomocí šablonovacího systému twig. Pro instalaci byl použit composer.
+Všechny POST operace jsou prováděny AJAXem z jQuery. Na základě krátké odpovědi provede javascript navigační operaci(přechod na jinou stránku či znovunačtení té samé).
+Cílem je eliminovat POST operace z historie prohlížeče.
+
+Pro připojení k databázi používám PDO a jako databázi jsem si zvolil SQLite. V případě neexistujícího souboru se databáze vytvoří z přichystaných ddl a dml skriptů.
+
+Na frontendu používám bootstrap a jQuery s pluginy dataTables a star-rating.
+
+## Závěr
+Aplikace by určitě snesla více péče.
+ Jsem rád, že jsem si vyzkoušel nové technologie, například PDO.
+ Nedávno jsem měl mořnost napsat si aplikaci v nodeJS a práce s ním byla o mnoho příjemnější než s php.
