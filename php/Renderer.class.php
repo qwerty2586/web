@@ -79,6 +79,7 @@ class Renderer {
                     "users" => $this->get_users(),
                     "reviewers" => $this->get_reviewers_names(),
                     "reviews" => $this->ctx->get_article()->get_all_reviews(),
+                    "my_id" => $this->ctx->get_login()->get_user_id(),
                     "my_rights" => $this->ctx->get_rights()->get_user_rigths()["idright"],
                     "rights" => $this->ctx->get_rights()::RIGHTS
                 ];

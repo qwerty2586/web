@@ -232,6 +232,12 @@ class Database {
         $this->execute();
     }
 
+    public function delete_user($iduser) {
+        $this->prepare("DELETE FROM " . USERS . " WHERE ".IDUSER." =:iduser ;");
+        $this->bind(":iduser",$iduser);
+        $this->execute();
+    }
+
 
 
 

@@ -322,3 +322,15 @@ function changeUserRights(iduser, new_idright) {
             }
         });
 }
+
+function deleteUser(iduser) {
+    let action = "delete";
+    $.post(router.users, {action: action, iduser: iduser},
+        function (result) {
+            if (result === "OK") {
+                location.reload();
+            } else {
+                showMessage(result);
+            }
+        });
+}

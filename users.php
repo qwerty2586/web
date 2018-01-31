@@ -22,4 +22,13 @@ switch ($_POST["action"]) {
             $ctx->get_responder()->error("You dont have rights change rights of others");
         }
         break;
+    case "delete" :
+        $iduser = $_POST["iduser"];
+        if ($ctx->get_rights()->has_admin_rigths()) {
+            $ctx->get_db()->delete_user($iduser);
+            $ctx->get_responder()->ok();
+        } else {
+            $ctx->get_responder()->error("You dont have rights to delete others");
+        }
+        break;
 }
